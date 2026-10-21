@@ -1,0 +1,23 @@
+[Unit]
+Description=CDS Election voting server
+After=network.target
+
+[Service]
+Type=simple
+User=cds
+Group=cds
+WorkingDirectory=/opt/cds-election
+EnvironmentFile=/opt/cds-election/.env
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the app only needs to write to its database directory.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cds-election
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
