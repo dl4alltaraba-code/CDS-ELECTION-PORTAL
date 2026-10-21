@@ -8,7 +8,7 @@
  * "INSERT OR REPLACE". REPLACE deletes and re-inserts the row, which gives the
  * voter a new `id` and orphans any votes already linked to the old id.
  */
-const { get, all, runNoSave, transaction } = require('../db');
+const { get, all, run, runNoSave, transaction } = require('../db');
 
 const STATE_CODE_PATTERN = /^[A-Z]{2}\/\d{2}[A-Z]\/[A-Z0-9]{3,5}$/;
 const MAX_SURNAME_LENGTH = 100;
@@ -256,10 +256,129 @@ function exportRegisterCsv() {
   return lines.join('\r\n') + '\r\n';
 }
 
+/**
+ * Register a single voter manually.
+ * @param {{ stateCode: string, surname: string }} param0
+ */
+function registerSingleVoter({ stateCode, surname }) {
+  if (!stateCode || typeof stateCode !== 'string') {
+    throw new Error('State code is required.');
+  }
+  if (!surname || typeof surname !== 'string') {
+    throw new Error('Surname is required.');
+  }
+
+  const normalizedCode = stateCode.trim().toUpperCase();
+  const normalizedSurname = surname.trim().replace(/\s+/g, ' ');
+
+  if (!STATE_CODE_PATTERN.test(normalizedCode)) {
+    throw new Error(`Invalid state code "${normalizedCode}". Expected format like TR/25A/0406.`);
+  }
+
+  if (normalizedSurname.length === 0) {
+    throw new Error('Surname cannot be empty.');
+  }
+
+  if (normalizedSurname.length > MAX_SURNAME_LENGTH) {
+    throw new Error(`Surname must not exceed ${MAX_SURNAME_LENGTH} characters.`);
+  }
+
+  const existing = get('SELECT id, state_code, surname FROM users WHERE state_code = ?', [normalizedCode]);
+  if (existing) {
+    const err = new Error(`State code "${normalizedCode}" is already registered (Surname: ${existing.surname}).`);
+    err.code = 'ALREADY_EXISTS';
+    err.existing = existing;
+    throw err;
+  }
+
+  const id = run('INSERT INTO users (state_code, surname) VALUES (?, ?)', [normalizedCode, normalizedSurname]);
+  return {
+    id,
+    stateCode: normalizedCode,
+    surname: normalizedSurname,
+  };
+}
+
+/**
+ * List voters with pagination and search.
+ */
+function listVoters({ search = '', limit = 15, page = 1 } = {}) {
+  const safeLimit = Math.max(1, Math.min(100, parseInt(limit, 10) || 15));
+  const safePage = Math.max(1, parseInt(page, 10) || 1);
+  const offset = (safePage - 1) * safeLimit;
+
+  let countSql = 'SELECT COUNT(*) AS total FROM users';
+  let dataSql = `
+    SELECT u.id, u.state_code, u.surname, u.created_at,
+      CASE WHEN EXISTS (SELECT 1 FROM votes v WHERE v.user_id = u.id) THEN 1 ELSE 0 END AS has_voted
+    FROM users u
+  `;
+  const params = [];
+
+  const trimmed = String(search || '').trim();
+  if (trimmed) {
+    const filter = `%${trimmed}%`;
+    countSql += ' WHERE state_code LIKE ? OR surname LIKE ?';
+    dataSql += ' WHERE u.state_code LIKE ? OR u.surname LIKE ?';
+    params.push(filter, filter);
+  }
+
+  dataSql += ' ORDER BY u.id DESC LIMIT ? OFFSET ?';
+  const countRow = get(countSql, trimmed ? [params[0], params[1]] : []);
+  const total = countRow ? countRow.total : 0;
+  const rows = all(dataSql, trimmed ? [...params, safeLimit, offset] : [safeLimit, offset]);
+
+  return {
+    voters: rows.map(r => ({
+      id: r.id,
+      stateCode: r.state_code,
+      surname: r.surname,
+      hasVoted: Boolean(r.has_voted),
+      createdAt: r.created_at,
+    })),
+    total,
+    page: safePage,
+    limit: safeLimit,
+    totalPages: Math.ceil(total / safeLimit) || 1,
+  };
+}
+
+/**
+ * Delete a voter if they have not yet voted.
+ */
+function deleteVoter(id) {
+  const voterId = parseInt(id, 10);
+  if (!voterId) {
+    const err = new Error('Invalid voter ID.');
+    err.status = 400;
+    throw err;
+  }
+
+  const existing = get('SELECT id, state_code, surname FROM users WHERE id = ?', [voterId]);
+  if (!existing) {
+    const err = new Error('Voter not found.');
+    err.status = 404;
+    throw err;
+  }
+
+  const hasVoted = get('SELECT 1 FROM votes WHERE user_id = ? LIMIT 1', [voterId]);
+  if (hasVoted) {
+    const err = new Error(`Cannot delete voter ${existing.state_code} because they have already cast ballots.`);
+    err.status = 400;
+    throw err;
+  }
+
+  run('DELETE FROM users WHERE id = ?', [voterId]);
+  return { id: voterId, stateCode: existing.state_code };
+}
+
 module.exports = {
   STATE_CODE_PATTERN,
   parseVoterCsv,
   importVoterCsv,
   getRegisterSummary,
   exportRegisterCsv,
+  registerSingleVoter,
+  listVoters,
+  deleteVoter,
 };

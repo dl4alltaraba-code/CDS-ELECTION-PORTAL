@@ -1,9 +1,65 @@
 const express = require('express');
 const { adminAuth } = require('../middleware/auth');
-const { importVoterCsv, getRegisterSummary, exportRegisterCsv } = require('../services/voterRegister');
+const {
+  importVoterCsv,
+  getRegisterSummary,
+  exportRegisterCsv,
+  registerSingleVoter,
+  listVoters,
+  deleteVoter
+} = require('../services/voterRegister');
 const router = express.Router();
 
 router.use(adminAuth);
+
+// GET /api/voters - list and search voters with pagination
+router.get('/', (req, res) => {
+  try {
+    res.set('Cache-Control', 'no-store');
+    const result = listVoters({
+      search: req.query.q || req.query.search || '',
+      page: req.query.page,
+      limit: req.query.limit
+    });
+    res.json(result);
+  } catch (err) {
+    console.error('List voters error:', err);
+    res.status(500).json({ error: 'Failed to list voters' });
+  }
+});
+
+// POST /api/voters - manually register a single voter
+router.post('/', (req, res) => {
+  try {
+    const { stateCode, surname } = req.body || {};
+    const voter = registerSingleVoter({ stateCode, surname });
+    console.log(`👤 Manual voter registration: ${voter.stateCode} (${voter.surname}) [ID: ${voter.id}]`);
+    res.status(201).json({
+      message: 'Voter registered successfully',
+      voter
+    });
+  } catch (err) {
+    if (err.code === 'ALREADY_EXISTS') {
+      return res.status(409).json({
+        error: err.message,
+        code: 'ALREADY_EXISTS',
+        existing: err.existing
+      });
+    }
+    res.status(400).json({ error: err.message || 'Failed to register voter' });
+  }
+});
+
+// DELETE /api/voters/:id - remove voter if they have not voted yet
+router.delete('/:id', (req, res) => {
+  try {
+    const result = deleteVoter(req.params.id);
+    res.json({ message: `Voter ${result.stateCode} removed successfully`, id: result.id });
+  } catch (err) {
+    const status = err.status || 400;
+    res.status(status).json({ error: err.message || 'Failed to delete voter' });
+  }
+});
 
 // GET /api/voters/summary - register size, turnout and last import info
 router.get('/summary', (req, res) => {

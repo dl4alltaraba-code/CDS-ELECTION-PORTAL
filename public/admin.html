@@ -113,8 +113,8 @@
     <section class="card register-card" id="voterRegister" style="margin-bottom: 24px;">
       <div class="register-head">
         <div>
-          <h2 class="section-title">Voter Register</h2>
-          <p class="section-desc">Upload a CSV to update who can vote. You'll preview changes before anything is saved.</p>
+          <h2 class="section-title">Voter Register & Voters</h2>
+          <p class="section-desc">Register voters individually, bulk import CSV, or search and manage accredited voters.</p>
         </div>
         <div class="register-actions">
           <button type="button" class="btn btn-outline btn-sm" id="downloadTemplateBtn">⬇ Template</button>
@@ -133,41 +133,161 @@
         <span id="registerAlertText"></span>
       </div>
 
-      <label class="dropzone" id="registerDropzone" for="registerFile">
-        <input type="file" id="registerFile" accept=".csv,text/csv" hidden>
-        <div class="dropzone__icon">📄</div>
-        <div class="dropzone__title" id="dropzoneTitle">Drop a CSV file here or <u>browse</u></div>
-        <div class="dropzone__hint">Columns: <code>Surname</code>, <code>State Code</code> (e.g. TR/25A/0406) · max 5 MB</div>
-      </label>
+      <!-- Voter Hub Navigation Tabs -->
+      <div class="voter-nav-tabs">
+        <button type="button" class="voter-nav-btn active" id="tabSingleBtn" data-target="singleVoterPane">
+          <span>➕ Register Single Voter</span>
+        </button>
+        <button type="button" class="voter-nav-btn" id="tabCsvBtn" data-target="csvUploadPane">
+          <span>📄 Bulk CSV Import</span>
+        </button>
+        <button type="button" class="voter-nav-btn" id="tabListBtn" data-target="voterListPane">
+          <span>🔍 Search & View Register (<span id="voterSearchCountBadge">—</span>)</span>
+        </button>
+      </div>
 
-      <fieldset class="mode-toggle" id="registerMode">
-        <legend class="form-label">Import mode</legend>
-        <label class="mode-option">
-          <input type="radio" name="registerMode" value="merge" checked>
-          <span class="mode-option__body">
-            <span class="mode-option__title">Merge</span>
-            <span class="mode-option__desc">Add new voters and update surnames. Nobody is removed.</span>
-          </span>
-        </label>
-        <label class="mode-option">
-          <input type="radio" name="registerMode" value="replace">
-          <span class="mode-option__body">
-            <span class="mode-option__title">Replace</span>
-            <span class="mode-option__desc">Register becomes exactly this file. Voters who already voted are always kept.</span>
-          </span>
-        </label>
-      </fieldset>
+      <!-- Tab 1: Single Voter Registration Form -->
+      <div class="voter-tab-pane" id="singleVoterPane">
+        <div class="single-voter-card">
+          <div style="margin-bottom: 16px;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">➕ Register Single Voter</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">
+              Manually register a corps member who was not captured in the CSV register so they can cast their vote.
+            </p>
+          </div>
 
-      <div class="register-preview" id="registerPreview" hidden>
-        <div class="register-preview__title">Preview of changes <span id="previewFile"></span></div>
-        <div class="preview-grid" id="previewGrid"></div>
-        <div class="preview-issues" id="previewIssues"></div>
-        <div class="register-preview__footer">
-          <button type="button" class="btn btn-outline btn-sm" id="cancelImportBtn">Cancel</button>
-          <button type="button" class="btn btn-primary btn-sm" id="applyImportBtn">
-            <span class="btn-text">Apply Import</span>
-            <span class="spinner"></span>
-          </button>
+          <div id="singleVoterAlert" class="alert alert-success">
+            <span>✅</span>
+            <span id="singleVoterAlertText"></span>
+          </div>
+
+          <form id="singleVoterForm">
+            <div class="single-voter-form-grid">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="singleStateCode">State Code</label>
+                <input type="text" id="singleStateCode" class="form-input" placeholder="e.g. TR/25A/0406" required autocomplete="off" style="text-transform: uppercase;">
+                <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; display: block;">Format: XX/XX[A-Z]/XXXX (e.g. TR/25A/0406)</span>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="singleSurname">Surname</label>
+                <input type="text" id="singleSurname" class="form-input" placeholder="e.g. Adebayo" required autocomplete="off">
+                <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; display: block;">Voter will use this surname to log in and vote</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: 16px;">
+              <button type="button" class="btn btn-outline btn-sm" id="singleVoterResetBtn">Clear</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="singleVoterSubmitBtn" style="min-width: 160px;">
+                <span class="btn-text">+ Register Voter</span>
+                <span class="spinner"></span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Recently Registered in this session -->
+          <div class="recent-voters-section" id="recentVotersSection" style="display: none;">
+            <div class="recent-voters-title">
+              <span>Recently Registered (This Session)</span>
+              <span id="recentVotersCount" style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">0 registered</span>
+            </div>
+            <div class="voter-table-wrap">
+              <table class="voter-table">
+                <thead>
+                  <tr>
+                    <th>State Code</th>
+                    <th>Surname</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentVotersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Bulk CSV Upload -->
+      <div class="voter-tab-pane" id="csvUploadPane" style="display: none;">
+        <label class="dropzone" id="registerDropzone" for="registerFile">
+          <input type="file" id="registerFile" accept=".csv,text/csv" hidden>
+          <div class="dropzone__icon">📄</div>
+          <div class="dropzone__title" id="dropzoneTitle">Drop a CSV file here or <u>browse</u></div>
+          <div class="dropzone__hint">Columns: <code>Surname</code>, <code>State Code</code> (e.g. TR/25A/0406) · max 5 MB</div>
+        </label>
+
+        <fieldset class="mode-toggle" id="registerMode">
+          <legend class="form-label">Import mode</legend>
+          <label class="mode-option">
+            <input type="radio" name="registerMode" value="merge" checked>
+            <span class="mode-option__body">
+              <span class="mode-option__title">Merge</span>
+              <span class="mode-option__desc">Add new voters and update surnames. Nobody is removed.</span>
+            </span>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="registerMode" value="replace">
+            <span class="mode-option__body">
+              <span class="mode-option__title">Replace</span>
+              <span class="mode-option__desc">Register becomes exactly this file. Voters who already voted are always kept.</span>
+            </span>
+          </label>
+        </fieldset>
+
+        <div class="register-preview" id="registerPreview" hidden>
+          <div class="register-preview__title">Preview of changes <span id="previewFile"></span></div>
+          <div class="preview-grid" id="previewGrid"></div>
+          <div class="preview-issues" id="previewIssues"></div>
+          <div class="register-preview__footer">
+            <button type="button" class="btn btn-outline btn-sm" id="cancelImportBtn">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="applyImportBtn">
+              <span class="btn-text">Apply Import</span>
+              <span class="spinner"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Search & View Register -->
+      <div class="voter-tab-pane" id="voterListPane" style="display: none;">
+        <div class="single-voter-card">
+          <div class="voter-search-bar">
+            <input type="text" id="voterSearchInput" class="form-input" placeholder="Search registered voters by State Code or Surname..." autocomplete="off">
+            <button type="button" class="btn btn-primary btn-sm" id="voterSearchBtn">
+              <span class="btn-text">🔍 Search</span>
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="voterSearchResetBtn" title="Reset search">Reset</button>
+          </div>
+
+          <div id="voterListLoading" style="display: none; text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem;">
+            Loading voters...
+          </div>
+
+          <div class="voter-table-wrap" id="voterTableWrap">
+            <table class="voter-table">
+              <thead>
+                <tr>
+                  <th>State Code</th>
+                  <th>Surname</th>
+                  <th>Voting Status</th>
+                  <th>Date Added</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="voterListBody">
+                <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 18px;">Click Search or switch to this tab to view registered voters.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="voter-pagination" id="voterPagination">
+            <div id="voterPaginationInfo">Showing 0 voters</div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-outline btn-sm" id="voterPrevPageBtn" disabled>← Previous</button>
+              <button type="button" class="btn btn-outline btn-sm" id="voterNextPageBtn" disabled>Next →</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

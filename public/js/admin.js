@@ -386,6 +386,8 @@
       document.getElementById('regLastUpload').textContent = last
         ? `Last import: ${last.filename || 'CSV'} · ${last.mode} · ${formatDate(last.created_at)} (+${last.added} / ~${last.updated} / −${last.removed})`
         : 'No imports yet';
+      const countBadge = document.getElementById('voterSearchCountBadge');
+      if (countBadge) countBadge.textContent = data.total.toLocaleString();
     } catch (err) {
       console.error('Register summary error:', err);
     }
@@ -562,5 +564,296 @@
       showAdminAlert('registerAlert', err.message, 'error');
     }
   });
+
+  // --- Voter Hub Navigation Tabs ---
+  const tabSingleBtn = document.getElementById('tabSingleBtn');
+  const tabCsvBtn = document.getElementById('tabCsvBtn');
+  const tabListBtn = document.getElementById('tabListBtn');
+  const singleVoterPane = document.getElementById('singleVoterPane');
+  const csvUploadPane = document.getElementById('csvUploadPane');
+  const voterListPane = document.getElementById('voterListPane');
+
+  const voterTabs = [
+    { btn: tabSingleBtn, pane: singleVoterPane },
+    { btn: tabCsvBtn, pane: csvUploadPane },
+    { btn: tabListBtn, pane: voterListPane },
+  ];
+
+  function switchVoterTab(targetPaneId) {
+    voterTabs.forEach(({ btn, pane }) => {
+      if (!btn || !pane) return;
+      if (pane.id === targetPaneId) {
+        btn.classList.add('active');
+        pane.style.display = 'block';
+      } else {
+        btn.classList.remove('active');
+        pane.style.display = 'none';
+      }
+    });
+
+    if (targetPaneId === 'voterListPane') {
+      loadVoterList(currentVoterPage);
+    }
+  }
+
+  if (tabSingleBtn) tabSingleBtn.addEventListener('click', () => switchVoterTab('singleVoterPane'));
+  if (tabCsvBtn) tabCsvBtn.addEventListener('click', () => switchVoterTab('csvUploadPane'));
+  if (tabListBtn) tabListBtn.addEventListener('click', () => switchVoterTab('voterListPane'));
+
+  // --- Single Voter Registration Logic ---
+  const singleVoterForm = document.getElementById('singleVoterForm');
+  const singleStateCode = document.getElementById('singleStateCode');
+  const singleSurname = document.getElementById('singleSurname');
+  const singleVoterSubmitBtn = document.getElementById('singleVoterSubmitBtn');
+  const singleVoterResetBtn = document.getElementById('singleVoterResetBtn');
+  const recentVotersSection = document.getElementById('recentVotersSection');
+  const recentVotersBody = document.getElementById('recentVotersBody');
+  const recentVotersCount = document.getElementById('recentVotersCount');
+
+  const sessionRecentVoters = [];
+
+  // Auto-uppercase state code input
+  if (singleStateCode) {
+    singleStateCode.addEventListener('input', () => {
+      singleStateCode.value = singleStateCode.value.toUpperCase();
+    });
+  }
+
+  if (singleVoterResetBtn) {
+    singleVoterResetBtn.addEventListener('click', () => {
+      singleVoterForm.reset();
+      const alert = document.getElementById('singleVoterAlert');
+      if (alert) alert.classList.remove('show');
+      singleStateCode.focus();
+    });
+  }
+
+  function renderRecentVoters() {
+    if (!recentVotersSection || !recentVotersBody) return;
+    if (sessionRecentVoters.length === 0) {
+      recentVotersSection.style.display = 'none';
+      return;
+    }
+
+    recentVotersSection.style.display = 'block';
+    recentVotersCount.textContent = `${sessionRecentVoters.length} registered this session`;
+
+    recentVotersBody.innerHTML = sessionRecentVoters.map(v => `
+      <tr>
+        <td><span class="voter-code-badge">${escapeHtml(v.stateCode)}</span></td>
+        <td><strong>${escapeHtml(v.surname)}</strong></td>
+        <td>
+          <span class="voter-badge-status not-voted">⏳ Registered (Not Voted)</span>
+        </td>
+        <td>
+          <button class="btn-delete" onclick="deleteVoter(${v.id}, '${escapeHtml(v.stateCode)}')" title="Remove">✕</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  if (singleVoterForm) {
+    singleVoterForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const stateCode = singleStateCode.value.trim().toUpperCase();
+      const surname = singleSurname.value.trim();
+
+      if (!stateCode || !surname) {
+        showAdminAlert('singleVoterAlert', 'Both State Code and Surname are required.', 'error');
+        return;
+      }
+
+      const STATE_CODE_REGEX = /^[A-Z]{2}\/\d{2}[A-Z]\/[A-Z0-9]{3,5}$/;
+      if (!STATE_CODE_REGEX.test(stateCode)) {
+        showAdminAlert('singleVoterAlert', `Invalid State Code "${stateCode}". Expected format like TR/25A/0406.`, 'error');
+        return;
+      }
+
+      singleVoterSubmitBtn.classList.add('loading');
+      singleVoterSubmitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API}/api/voters`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': adminKey,
+          },
+          body: JSON.stringify({ stateCode, surname }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to register voter');
+        }
+
+        showAdminAlert('singleVoterAlert', `Voter ${data.voter.stateCode} (${data.voter.surname}) registered successfully and can now vote!`, 'success');
+        
+        sessionRecentVoters.unshift(data.voter);
+        renderRecentVoters();
+
+        singleVoterForm.reset();
+        singleStateCode.focus();
+
+        await Promise.all([loadRegisterSummary(), loadStats()]);
+        if (voterListPane && voterListPane.style.display !== 'none') {
+          loadVoterList(currentVoterPage);
+        }
+      } catch (err) {
+        showAdminAlert('singleVoterAlert', err.message, 'error');
+      } finally {
+        singleVoterSubmitBtn.classList.remove('loading');
+        singleVoterSubmitBtn.disabled = false;
+      }
+    });
+  }
+
+  // --- Voter Register Search & List ---
+  const voterSearchInput = document.getElementById('voterSearchInput');
+  const voterSearchBtn = document.getElementById('voterSearchBtn');
+  const voterSearchResetBtn = document.getElementById('voterSearchResetBtn');
+  const voterListBody = document.getElementById('voterListBody');
+  const voterListLoading = document.getElementById('voterListLoading');
+  const voterPaginationInfo = document.getElementById('voterPaginationInfo');
+  const voterPrevPageBtn = document.getElementById('voterPrevPageBtn');
+  const voterNextPageBtn = document.getElementById('voterNextPageBtn');
+
+  let currentVoterPage = 1;
+  let voterSearchQuery = '';
+
+  async function loadVoterList(page = 1) {
+    currentVoterPage = page;
+    if (voterListLoading) voterListLoading.style.display = 'block';
+
+    try {
+      const params = new URLSearchParams({
+        search: voterSearchQuery,
+        page: String(currentVoterPage),
+        limit: '15',
+      });
+
+      const res = await fetch(`${API}/api/voters?${params}`, {
+        headers: { 'X-Admin-Key': adminKey },
+      });
+
+      if (!res.ok) throw new Error('Failed to load voters list');
+      const data = await res.json();
+      renderVoterList(data);
+    } catch (err) {
+      if (voterListBody) {
+        voterListBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--error); padding: 16px;">${escapeHtml(err.message)}</td></tr>`;
+      }
+    } finally {
+      if (voterListLoading) voterListLoading.style.display = 'none';
+    }
+  }
+
+  function renderVoterList(data) {
+    if (!voterListBody) return;
+
+    if (!data.voters || data.voters.length === 0) {
+      voterListBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No voters found matching your search.</td></tr>`;
+      if (voterPaginationInfo) voterPaginationInfo.textContent = '0 voters found';
+      if (voterPrevPageBtn) voterPrevPageBtn.disabled = true;
+      if (voterNextPageBtn) voterNextPageBtn.disabled = true;
+      return;
+    }
+
+    voterListBody.innerHTML = data.voters.map(v => `
+      <tr>
+        <td><span class="voter-code-badge">${escapeHtml(v.stateCode)}</span></td>
+        <td><strong>${escapeHtml(v.surname)}</strong></td>
+        <td>
+          ${v.hasVoted
+            ? '<span class="voter-badge-status voted">✓ Has Voted</span>'
+            : '<span class="voter-badge-status not-voted">⏳ Not Voted</span>'}
+        </td>
+        <td style="color: var(--text-muted); font-size: 0.75rem;">
+          ${v.createdAt ? formatDate(v.createdAt) : '—'}
+        </td>
+        <td>
+          ${v.hasVoted
+            ? '<span style="font-size: 0.75rem; color: var(--text-muted);" title="Cannot remove a voter who has cast ballots">Locked</span>'
+            : `<button class="btn-delete" onclick="deleteVoter(${v.id}, '${escapeHtml(v.stateCode)}')" title="Delete voter">✕</button>`}
+        </td>
+      </tr>
+    `).join('');
+
+    const start = (data.page - 1) * data.limit + 1;
+    const end = Math.min(data.page * data.limit, data.total);
+    if (voterPaginationInfo) {
+      voterPaginationInfo.textContent = `Showing ${start}–${end} of ${data.total} voters (Page ${data.page} of ${data.totalPages})`;
+    }
+
+    if (voterPrevPageBtn) voterPrevPageBtn.disabled = data.page <= 1;
+    if (voterNextPageBtn) voterNextPageBtn.disabled = data.page >= data.totalPages;
+  }
+
+  if (voterSearchBtn) {
+    voterSearchBtn.addEventListener('click', () => {
+      voterSearchQuery = voterSearchInput.value.trim();
+      loadVoterList(1);
+    });
+  }
+
+  if (voterSearchInput) {
+    voterSearchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        voterSearchQuery = voterSearchInput.value.trim();
+        loadVoterList(1);
+      }
+    });
+  }
+
+  if (voterSearchResetBtn) {
+    voterSearchResetBtn.addEventListener('click', () => {
+      voterSearchInput.value = '';
+      voterSearchQuery = '';
+      loadVoterList(1);
+    });
+  }
+
+  if (voterPrevPageBtn) {
+    voterPrevPageBtn.addEventListener('click', () => {
+      if (currentVoterPage > 1) loadVoterList(currentVoterPage - 1);
+    });
+  }
+
+  if (voterNextPageBtn) {
+    voterNextPageBtn.addEventListener('click', () => {
+      loadVoterList(currentVoterPage + 1);
+    });
+  }
+
+  // Global delete voter handler
+  window.deleteVoter = async (id, stateCode) => {
+    if (!confirm(`Are you sure you want to remove voter ${stateCode} from the register?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/api/voters/${id}`, {
+        method: 'DELETE',
+        headers: { 'X-Admin-Key': adminKey },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to remove voter');
+
+      const sessionIdx = sessionRecentVoters.findIndex(v => v.id === id);
+      if (sessionIdx !== -1) {
+        sessionRecentVoters.splice(sessionIdx, 1);
+        renderRecentVoters();
+      }
+
+      await Promise.all([loadRegisterSummary(), loadStats()]);
+      if (voterListPane && voterListPane.style.display !== 'none') {
+        loadVoterList(currentVoterPage);
+      }
+    } catch (err) {
+      alert('Delete failed: ' + err.message);
+    }
+  };
 
 })();

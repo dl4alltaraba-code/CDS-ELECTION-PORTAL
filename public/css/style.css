@@ -1478,4 +1478,185 @@ body::before {
   transform: scale(1.1);
 }
 
+/* =============================
+   VOTER REGISTER HUB & SINGLE REGISTRATION
+   ============================= */
+.voter-nav-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  margin: 18px 0 16px;
+  flex-wrap: wrap;
+}
+
+.voter-nav-btn {
+  flex: 1 1 160px;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.voter-nav-btn:hover:not(.active) {
+  background: rgba(76, 175, 80, 0.08);
+  color: var(--text-primary);
+}
+
+.voter-nav-btn.active {
+  background: var(--gradient-brand);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+
+.voter-tab-pane {
+  animation: fadeSlideIn 0.3s ease;
+}
+
+.single-voter-card {
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.single-voter-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 650px) {
+  .single-voter-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.recent-voters-section {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.recent-voters-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.voter-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: rgba(6, 13, 6, 0.5);
+  margin-top: 14px;
+}
+
+.voter-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.voter-table th {
+  padding: 12px 14px;
+  background: rgba(76, 175, 80, 0.08);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+}
+
+.voter-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(76, 175, 80, 0.07);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.voter-table tr:last-child td {
+  border-bottom: none;
+}
+
+.voter-table tr:hover td {
+  background: rgba(76, 175, 80, 0.03);
+}
+
+.voter-badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.voter-badge-status.voted {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--green-300);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.voter-badge-status.not-voted {
+  background: rgba(255, 167, 38, 0.1);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 167, 38, 0.25);
+}
+
+.voter-code-badge {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: rgba(76, 175, 80, 0.12);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.voter-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.voter-search-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.voter-search-bar .form-input {
+  flex: 1;
+}
+
+
 
