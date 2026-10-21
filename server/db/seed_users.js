@@ -12,7 +12,10 @@ const { importVoterCsv } = require('../services/voterRegister');
  * Pass --force to merge the CSV into an existing register anyway.
  */
 async function seedUsers() {
-  const csvPath = path.join(__dirname, '..', '..', 'stuff', 'users.csv');
+  let csvPath = path.join(__dirname, '..', '..', 'stuff', 'voters.csv');
+  if (!fs.existsSync(csvPath)) {
+    csvPath = path.join(__dirname, '..', '..', 'stuff', 'users.csv');
+  }
   const force = process.argv.includes('--force');
 
   try {
@@ -25,7 +28,7 @@ async function seedUsers() {
     }
 
     if (!fs.existsSync(csvPath)) {
-      console.warn('⚠️  stuff/users.csv not found — starting with an empty voter register. Upload one from the admin dashboard.');
+      console.warn('⚠️  stuff/voters.csv not found — starting with an empty voter register. Upload one from the admin dashboard.');
       return;
     }
 

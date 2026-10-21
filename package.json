@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "CDS Election Voting System",
   "main": "server/index.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server/db/seed_users.js && node server/index.js",
     "dev": "node --watch server/index.js"

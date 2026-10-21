@@ -1,3 +1,7 @@
+-- DL4ALL CDS Election Seed Data
+-- Auto-generated from stuff/candidates list.csv
+
+-- ==========================================
 -- SETTINGS
 -- ==========================================
 INSERT OR IGNORE INTO settings (key, value) VALUES ('voting_enabled', 'true');
@@ -5,47 +9,111 @@ INSERT OR IGNORE INTO settings (key, value) VALUES ('results_visible', 'true');
 INSERT OR IGNORE INTO settings (key, value) VALUES ('candidates_voting_visible', 'true');
 
 -- ==========================================
--- CANDIDATES (17 candidates, 8 positions)
+-- CANDIDATES (15 candidates)
 -- ==========================================
 
--- PRESIDENT (2 candidates)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (1, 'Bako-Gaiya Shunanum', 'President', 'DL4ALL, in partnership with NITDA, has been charged with the responsibility of creating awareness on digital literacy, empowering members of the CDS with digital skills and educating the informal sector on the use of digital tools. This is in the bid to attain a 70% percent digital literacy across the country. It is with this that I wish to declare my interest to run for the office of the president. Leadership is not about the office or position occupied but is rather a call to dedication and responsibility to service, teamwork and ensuring wholistic advancement.', '/images/candidates/shuna-bako.jpg');
+-- PRESIDENT
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (1, 'Idajili John Ojochegbe', 'President', 'I will ensure every corp member is good in tech by organizing seminar and hackathons. Secondly I''ll strengthen our school adoption system by organizing hackathons and general school adoption.', '/images/candidates/idajili-john-ojochegbe.jpg');
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (2, 'Agada Catherine Eneh', 'President', 'As a Digital Literacy for All CDS, I intend when I get to office see that digital literacy training of the informal sector is carried out as developed by the National Information Technology Agency and core mandate of the CDS. Also, that School adoption programs will take place and other digital literacy program that will help the host community and the CDS members.', '/images/candidates/catherine-agada.jpg');
+-- VICE PRESIDENT
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (2, 'Abdulganiyu Nafisat', 'Vice President', 'To serve, while growing with the CDS members.', '/images/candidates/abdulganiyu-nafisat.jpg');
 
--- VICE PRESIDENT (1 candidate)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (3, 'Emmanuel Longji Joel', 'Vice President', 'I stand before you not merely as a candidate, but as someone who deeply believes in the power of service, collaboration, and vision. Digital literacy is no longer a luxury. It is a necessity. I will promote stronger teamwork among members, support initiatives that extend our outreach programs, encourage creative ideas and innovative projects, and work to ensure that members feel valued, supported, and motivated to contribute their best. Leadership is not about position, but responsibility.', '/images/candidates/emmanuel-longji-joel.jpg');
+-- GENERAL SECRETARY
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (3, 'Doris Emmanuel', 'General Secretary', 'My name is Doris Emmanuel, and I am applying to serve as either the General Secretary or the Assistant General 
+Secretary for the DL4ALL CDS group.
 
--- GENERAL SECRETARY (2 candidates)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (4, 'Olobo Rejoice Daniel', 'General Secretary', 'I am contesting for the position of Secretary of the Digital Literacy for All CDS group. My focus areas: Clear Communication to ensure timely updates, Proper Documentation to maintain accurate records, Organized Outreach to support better coordination, Digital Record Keeping for well-organized records, and Member Engagement to encourage active participation. If elected, I will serve with dedication, responsibility, and transparency.', '/images/candidates/rejoice-daniel.jpg');
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (5, 'Ibrahim Favour Deborah', 'General Secretary', 'My goal is to create a very professional and well-organized CDS that excels in open communication, careful record-keeping, and significant community involvement. I will make sure our operations are effective, accessible, and accountable to each member by implementing streamlined digital solutions for reporting and documentation. I am dedicated to working with others on strategic projects that equip our host community with critical 21st-century skills.', '/images/candidates/favour-ibrahim.jpg');
+I am bringing a strong track record of leadership and trusted administrative capacity to our executive team:
+� Administrative Leadership: As the former Vice President of Public Administration in school, I mastered organizational structure and official protocols.
+� Financial Accountability: Serving as a former Financial Secretary in my campus fellowship sharpened my accuracy in record-keeping, transparency, and detailed reporting.
+� Corporate Experience: My past professional experience as a receptionist advanced my skills in database tracking, scheduling, and structured communication.
+If selected for either role, I will bring administrative efficiency to our secretariat by focusing on:
+1. Flawless Record-Keeping: Ensuring all meeting minutes, member data, and internal archives are documented and accurate.
+2. Clear & Prompt Communication: Delivering clean, timely meeting summaries and official updates so no member is left in the dark.
+3. Professional LGI Liaison: Utilizing my public administration background to draft  official letters and reports for our Local Government Inspector.
+With my background in administration, institutional finance, and office management, I am fully equipped to keep our tech-focused CDS organized.
+Thank you for your consideration.
+Name:Doris Emmanuel 
+State Code: TR/26B/1194', '/images/candidates/doris-emmanuel.jpg');
 
--- TREASURER (1 candidate)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (6, 'Ibrahim Zainab Ibrahim', 'Treasurer', 'I am running for Treasurer to manage our funds with honesty, transparency, and care. I will keep clear records, support projects responsibly, and ensure every contribution is used wisely. Your trust matters.', '/images/candidates/zainab-ibrahim.jpg');
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (4, 'Muhammad Sani Ribadu', 'General Secretary', 'My vision is to build an executive secretariat that is accessible, highly organized, digitally driven, and dedicated to serving every member with integrity.', '/images/candidates/muhammad-sani-ribadu.jpg');
 
--- FINANCIAL SECRETARY (3 candidates)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (7, 'Ike Uleko Happiness', 'Financial Secretary', 'I am convinced that effective financial management is crucial for the success and growth of our CDS. If elected, I pledge to perform my duties with honesty, accountability and transparency. My plans include: Accurate Record Keeping, Transparency in Financial Matters, Proper Documentation, Safe Keeping of Financial Records, and Promotion of Financial Discipline.', '/images/candidates/happiness-ike.jpg');
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (5, 'Samaila Zira', 'General Secretary', 'I will make sure every minute is taking clearly and every records is kept safely', '/images/candidates/samaila-zira.jpg');
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (8, 'Nyam Tavershima', 'Financial Secretary', 'I humbly present myself as a candidate for Financial Secretary. My administration will focus on: Transparency and Accountability with regular financial reports, Proper Record Keeping, Efficient Fund Management, Prompt Collection of Dues, Financial Planning and Growth, and Integrity and Service. I pledge to serve with honesty, dedication, and fairness.', '/images/candidates/nyam-tavershima.jpg');
+-- ASSISTANT GENERAL SECRETARY
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (6, 'Clementine Anthony', 'Assistant General Secretary', 'Good day, everyone.
+My name is Clementine Anthony and I''m contesting for the position of Assistant General Secretary of DL4ALL CDS.
+Honestly, I''m not going to stand here and make a lot of promises. I believe this position comes with responsibilities, and if I''m given the opportunity, I''ll do my best to carry them out.
+I know I''m still getting to know the group better, but I''m willing to learn and work with everyone. I''ll support the General Secretary, help with keeping records, and make sure important information about our meetings and activities gets to members when necessary.
+I''m also open to ideas, suggestions, and corrections because I believe there''s always room to learn from others.
+I''m asking for your support and your vote, and if elected, I''ll do my best not to disappoint you.
+Thank you.', '/images/candidates/clementine-anthony.jpg');
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (9, 'Ayinlo Miracle Yohanna', 'Financial Secretary', 'With a background in Accounting and skills in financial analysis, I do not just handle money — I track it, analyze it, and make it make sense. What I am bringing: 100% transparency, Digital tracking with clean organized records, Accountability for every kobo, and Smart spending with no waste, just results.', '/images/candidates/miracle-yohanna.jpg');
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (7, 'Kenger Kagher', 'Assistant General Secretary', 'I''d assist the General Secretary to ensure every event is well documented', '/images/candidates/kenger-kagher.jpg');
 
--- WELFARE SECRETARY (2 candidates)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (10, 'Ishaku Mary', 'Welfare Secretary', 'My goal is to promote the well-being, unity, and support of every member. If elected, I will work hard to ensure that every corps member feels valued, supported, and cared for. No one will ever feel left out. I am set out to promote unity and cooperation among members, ensure maximum support during sickness or challenges, help organize welfare activities, and encourage care and concern for one another.', '/images/candidates/mary-ishaku.jpg');
+-- FINANCIAL SECRETARY
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (8, 'Michael Abednego', 'Financial Secretary', 'Team work, and consitancy.', '/images/candidates/michael-abednego.jpg');
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (11, 'Joy Alkali', 'Welfare Secretary', 'I humbly declare my interest in serving as Welfare Secretary of our CDS, committed to prioritizing the well-being, unity, and fair treatment of every member. I will ensure prompt response to members needs, promote inclusiveness and effective communication, and uphold transparency, accountability, and compassion in all responsibilities.', '/images/candidates/joy-alkali.jpg');
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (9, 'Sabin Racheal Monday', 'Financial Secretary', '*MANIFESTO FOR THE OFFICE OF FINANCIAL SECRETARY*
 
--- PROJECT MANAGER (5 candidates)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (12, 'Onah Christian Ogbole', 'Project Manager', 'I am a graduate with a strong passion for technology and innovation. With Data Analysis skills and Data Science background, I am equipped with analytical and problem-solving abilities necessary for effective project management. A true leader does not merely create followers but raises more leaders. If given the opportunity, I will work collaboratively to plan, coordinate, and successfully implement campaigns.', '/images/candidates/christian-onah.jpg');
+BY SABIN RACHEAL MONDAY,
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (13, 'Samaila Habibu', 'Project Manager', 'My goal is to promote effective planning, teamwork, and timely execution of projects for the growth and success of our CDS. If elected, I will ensure proper coordination of projects, responsible use of resources, transparency, and completion of tasks within the planned time. Together, we can turn ideas into successful projects that benefit everyone.', '/images/candidates/samaila-habibu.jpg');
+Good morning distinguished State Coordinator, L.I, CDS Coordinator, fellow Corps members.
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (14, 'Zacharias Confidence', 'Project Manager', 'I believe the essence of CDS is to create real impact in our host community. My three key priorities: Impactful Projects - reviving school adoption and bringing hands-on practical courses; Transparency and Accountability - clear communication and responsible resource management; Team Participation - encouraging collaboration so every corps member contributes.', '/images/candidates/confidence-zacharias.jpg');
+My name is  SABIN RACHEAL MONDAY,a Corps member with state code  TR/26B/1530, serving at OKENIHE COMMUNICATION LTD DANIJO COMPLEX, JALINGO. Department of Computer Science graduate. I am aspiring for the position of *FINANCIAL SECRETARY* for *Digital Literacy For All CDS Group / Graphics and Photography.*
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (15, 'Tsegban Moses Terdue', 'Project Manager', 'I am excited to contest for Project Manager to bring initiatives that will address community needs and foster growth. I am interested in collaborating with teams especially Tech Groups that build capacity and achieve shared goals in Digital Literacy. I will ensure clear communication and responsible resource management. If elected, I will leverage my skills to turn our CDS goals into tangible outcomes.', '/images/candidates/tsegban-moses.jpg');
+I am a lady of integrity, and I believe finance is about TRUST. Without trust, nothing can move forward.
 
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (16, 'Mnzughurga Philip Terhemba', 'Project Manager', 'I am ready to lead impactful digital literacy projects as a Project Manager at CDS. With my skills and passion for empowering communities, I am confident I can drive success. I am eager to leverage my expertise to make a difference.', '/images/candidates/mnzughurga-philip.jpg');
+*MY EXPERIENCE:*
+I have served before as a Treasurer, where I handled funds with honesty and kept accurate records. That experience has taught me accountability, transparency, and proper book-keeping.
 
--- PROVOST (1 candidate)
-INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (17, 'Abba Godwin Swanta', 'Provost', 'I have the intention to serve not only lead because leadership is not just by leading only, but being ready to serve also. I promise to give my best, ability, even resources to see the CDS grow in a good and higher level.', '/images/candidates/godwin-swanta.jpg');
+*MY VISION:*
+To ensure a transparent, accountable and financial system for our CDS group.
+
+*MY MISSION / WHAT I WILL DO IF ELECTED:*
+
+1. *TRANSPARENCY:* Every contribution, dues, and expenditure will be clearly recorded and made open to every member. No hidden spending.
+2. *PROPER RECORD KEEPING:* As a Computer Scientist, I will introduce a digital financial record and monthly financial report, so we all know how our money is spent.
+3. *ACCOUNTABILITY:* I will work closely with the President, Treasurer and Audit to ensure every kobo is accounted for.
+4. *FINANCIAL DISCIPLINE:* I will ensure our funds are used only for important CDS projects and activities that will benefit all of us.
+
+I am not contesting because of title, but because I want to SERVE and protect our collective resources.
+
+I humbly ask for your support and your vote.
+
+*Vote SABIN RACHEAL MONDAY for FINANCIAL SECRETARY!*
+*Vote for Transparency, Vote for Accountability!*
+
+Thank you and God bless you!', '/images/candidates/sabin-racheal-monday.jpg');
+
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (10, 'Solomon Mchiater Ibo', 'Financial Secretary', 'I Solomon Mchiater Ibo, as a graduate of accounting, if elected, I pledge to uphold transparency, accountability, and integrity in managing our financial records. I will ensure accurate documentation of all funds received and provide timely, reliable financial reports.', '/images/candidates/solomon-mchiater-ibo.jpg');
+
+-- WELFARE SECRETARY
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (11, 'Anchaver msurshima comfort', 'Welfare Secretary', 'As corps members, we are all serving away from our different homes, families and comfort zones and as such we are each others keeper, we all need support, encouragement and people who genuinely cares about us, and if voted in I will make sure we are all carried along as one big family United by NYSC scheme under the umbrella of DL_4 All', '/images/candidates/anchaver-msurshima-comfort.jpg');
+
+-- PROJECT MANAGER
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (12, 'HABIBU ARMAYAU ISAH', 'Project Manager', 'Vision:
+
+To drive impactful, well-structured, and sustainable community development projects that leave a lasting, positive footprint on our host community.
+
+Core Execution Plan:
+
+Structured Planning & Milestones: I will introduce clear roadmaps for every CDS project�breaking down tasks, setting realistic timelines, and ensuring every member knows their specific role and deliverables.
+
+Transparent Communication & Tracking: I will set up efficient tracking systems to keep everyone aligned, monitor progress transparently, and eliminate communication bottlenecks.
+
+Resource Optimization & Impact: I will focus on maximizing our available resources, time, and manpower to execute community projects that are truly sustainable and beneficial to the locals.
+
+Collaborative Teamwork: I will foster an inclusive environment where every member''s input is valued, encouraging active participation, shared ownership, and strong synergy across the group.', '/images/candidates/habibu-armayau-isah.jpg');
+
+-- PROVOST
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (13, 'Emmanuel Joshua Godwin', 'Provost', 'There will be no late coming if I am elected as the provost officer', '/images/candidates/emmanuel-joshua-godwin.jpg');
+
+-- DIRECTOR OF SOCIALS
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (14, 'Maimunat Muhammed Babale', 'Director of Socials', 'I am creative, social and full of vibes. life is not that serious,
+let make the most out of it. #let creative wonderful memories together ??.', '/images/candidates/maimunat-muhammed-babale.jpg');
+
+-- HEAD OF HACKATHON
+INSERT OR IGNORE INTO candidates (id, name, position, manifesto, image_url) VALUES (15, 'Israel Igbana', 'Head of Hackathon', 'I hope to build upon existing legacies built as regards to Hackathons, and then actively involve all builders in Development.
+Hackathons will not only be time to build, but also to have fun whole building.', '/images/candidates/israel-igbana.jpg');
+

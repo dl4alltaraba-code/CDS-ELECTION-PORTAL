@@ -13,7 +13,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: ADMIN_KEY
-        value: admin_cds_2024
+        sync: false  # set in the Render dashboard; never commit the real key
     disk:
       name: sqlite-data
       mountPath: /opt/render/project/src/data

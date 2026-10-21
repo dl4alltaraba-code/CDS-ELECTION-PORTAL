@@ -10,7 +10,19 @@ router.get('/', (req, res) => {
     
     // Group by position
     const grouped = {};
-    const positionOrder = ['President', 'Vice President', 'General Secretary', 'Treasurer', 'Financial Secretary', 'Welfare Secretary', 'Project Manager', 'Provost'];
+    const positionOrder = [
+      'President',
+      'Vice President',
+      'General Secretary',
+      'Assistant General Secretary',
+      'Treasurer',
+      'Financial Secretary',
+      'Welfare Secretary',
+      'Project Manager',
+      'Provost',
+      'Director of Socials',
+      'Head of Hackathon'
+    ];
     
     candidates.forEach(c => {
       if (!grouped[c.position]) {
@@ -26,6 +38,13 @@ router.get('/', (req, res) => {
         position: p,
         candidates: grouped[p]
       }));
+
+    // Append any extra positions not listed in positionOrder
+    Object.keys(grouped).forEach(p => {
+      if (!positionOrder.includes(p)) {
+        ordered.push({ position: p, candidates: grouped[p] });
+      }
+    });
 
     res.json({ positions: ordered, all: candidates });
   } catch (err) {

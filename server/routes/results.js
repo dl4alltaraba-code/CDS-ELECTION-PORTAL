@@ -6,12 +6,29 @@ const router = express.Router();
 router.get('/', (req, res) => {
   try {
     // Get results grouped by position
-    const positions = all('SELECT DISTINCT position FROM candidates ORDER BY position');
-    const positionOrder = ['President', 'Vice President', 'General Secretary', 'Treasurer', 'Financial Secretary', 'Welfare Secretary', 'Project Manager', 'Provost'];
+    const dbPositions = all('SELECT DISTINCT position FROM candidates ORDER BY position').map(p => p.position);
+    const positionOrder = [
+      'President',
+      'Vice President',
+      'General Secretary',
+      'Assistant General Secretary',
+      'Treasurer',
+      'Financial Secretary',
+      'Welfare Secretary',
+      'Project Manager',
+      'Provost',
+      'Director of Socials',
+      'Head of Hackathon'
+    ];
+    // Ordered positions with any extra positions appended
+    const allOrderedPositions = [
+      ...positionOrder.filter(p => dbPositions.includes(p)),
+      ...dbPositions.filter(p => !positionOrder.includes(p))
+    ];
 
     const results = [];
 
-    for (const pos of positionOrder) {
+    for (const pos of allOrderedPositions) {
       const totalForPosition = get(
         'SELECT COUNT(*) as total FROM votes WHERE position = ?', [pos]
       );

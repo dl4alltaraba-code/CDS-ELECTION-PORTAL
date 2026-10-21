@@ -2,7 +2,9 @@ const initSqlJs = require('sql.js');
 const path = require('path');
 const fs = require('fs');
 
-const DB_PATH = path.join(__dirname, '..', '..', 'data', 'election.db');
+// DB_PATH lets the VPS keep the database outside the code directory, so a
+// redeploy or git pull never touches live votes.
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', '..', 'data', 'election.db');
 
 let db = null;
 

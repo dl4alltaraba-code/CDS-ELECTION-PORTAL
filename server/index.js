@@ -5,8 +5,17 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const { initialize } = require('./db');
 
+// In production the app sits behind a reverse proxy (nginx). Trust the first
+// hop so express-rate-limit sees the real client IP instead of 127.0.0.1.
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction && (!process.env.JWT_SECRET || !process.env.ADMIN_KEY)) {
+  console.error('❌ JWT_SECRET and ADMIN_KEY must be set when NODE_ENV=production. See .env.example.');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(cors());
