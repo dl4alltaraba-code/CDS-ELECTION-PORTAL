@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DL4ALL CDS Election Results">
+  <title>DL4ALL — Election Results</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+</head>
+<body>
+  <!-- Public Results Dashboard -->
+  <div class="app-container" style="max-width: 800px;">
+    <div class="header" style="margin-bottom: 32px;">
+      <a href="/"><img src="/images/dl4all-logo.png" alt="DL4ALL" class="header__logo" style="height: 48px;"></a>
+      <h1 class="header__title">Live Election Results</h1>
+      <p class="header__subtitle">DL4ALL JALINGO Executive Election</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 32px;">
+      <div class="card" style="padding: 16px; text-align: center;">
+        <div class="stat-value" id="statVoters" style="font-size: 1.5rem; font-weight: 800; color: var(--accent);">0</div>
+        <div class="stat-label" style="font-size: 0.8rem; color: var(--text-secondary);">Total Votes Cast</div>
+      </div>
+      <div class="card" style="padding: 16px; text-align: center;">
+        <div class="stat-value" id="statTurnout" style="font-size: 1.5rem; font-weight: 800; color: var(--warning);">0%</div>
+        <div class="stat-label" style="font-size: 0.8rem; color: var(--text-secondary);">Voter Turnout</div>
+      </div>
+      <div class="card" style="padding: 16px; text-align: center;">
+        <div class="stat-value" id="statPositions" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">0</div>
+        <div class="stat-label" style="font-size: 0.8rem; color: var(--text-secondary);">Positions Contested</div>
+      </div>
+    </div>
+
+    <!-- Results Container -->
+    <div id="resultsContainer" style="display: flex; flex-direction: column; gap: 32px;">
+      <div class="card" style="text-align: center; padding: 48px 24px;">
+        <div class="spinner" style="display: inline-block; width: 32px; height: 32px; border-width: 3px; border-top-color: var(--accent); margin-bottom: 16px;"></div>
+        <p style="color: var(--text-muted);">Loading real-time results...</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+      <a href="/" class="btn btn-outline">← Return to Home</a>
+    </div>
+
+    <footer class="footer" style="padding-top: 48px;">
+      <p>DL4ALL JALINGO Election Portal &copy; 2026</p>
+    </footer>
+  </div>
+
+  <script src="/js/results.js"></script>
+</body>
+</html>

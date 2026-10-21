@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DL4ALL CDS Election - Cast your vote">
+  <title>DL4ALL — Vote</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <a href="/"><img src="/images/dl4all-logo.png" alt="DL4ALL" class="header__logo"></a>
+      <h1 class="header__title">DL4ALL CDS JALINGO Election</h1>
+      <p class="header__subtitle">Cast your vote securely</p>
+    </header>
+
+    <!-- Step indicators -->
+    <div class="steps" id="stepsContainer"></div>
+
+    <!-- Section 1: Verify State Code -->
+    <section class="section active" id="verifySection">
+      <div class="card">
+        <h2 class="section-title">Verify Identity</h2>
+        <p class="section-desc">Enter your NYSC state code to proceed</p>
+
+        <div id="verifyAlert" class="alert alert-error">
+          <span>⚠️</span>
+          <span id="verifyAlertText"></span>
+        </div>
+
+        <form id="verifyForm">
+          <div class="form-group">
+            <label class="form-label" for="surnameInput">Surname or Firstname</label>
+            <input type="text" id="surnameInput" class="form-input"
+              placeholder="e.g. Yakubu" autocomplete="off" spellcheck="false" required>
+          </div>
+          <div class="form-group" style="margin-top: 16px;">
+            <label class="form-label" for="stateCodeInput">State Code</label>
+            <input type="text" id="stateCodeInput" class="form-input"
+              placeholder="e.g. TR/26A/0000" autocomplete="off" spellcheck="false" required>
+          </div>
+          <button type="submit" class="btn btn-primary" id="verifyBtn">
+            <span class="spinner"></span>
+            <span class="btn-text">Verify & Continue</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Section 2: Vote per position (dynamic) -->
+    <section class="section" id="voteSection">
+      <div class="card">
+        <div class="position-header">
+          <span class="position-badge" id="positionBadge">Loading...</span>
+          <div class="position-counter" id="positionCounter"></div>
+        </div>
+
+        <h2 class="section-title" id="voteSectionTitle">Select your candidate</h2>
+        <p class="section-desc" id="voteSectionDesc">Choose one candidate for this position</p>
+
+        <div id="voteAlert" class="alert alert-error">
+          <span>⚠️</span>
+          <span id="voteAlertText"></span>
+        </div>
+
+        <div class="candidates-list" id="candidatesList"></div>
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" id="prevPositionBtn" style="display: none;">
+            <span class="btn-text">← Back</span>
+          </button>
+          <button class="btn btn-primary" id="nextPositionBtn" disabled>
+            <span class="btn-text">Next Position →</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Summary / Review -->
+    <section class="section" id="summarySection">
+      <div class="card">
+        <h2 class="section-title">Review Your Votes</h2>
+        <p class="section-desc">Confirm your selections before submitting</p>
+
+        <div id="summaryAlert" class="alert alert-error">
+          <span>⚠️</span>
+          <span id="summaryAlertText"></span>
+        </div>
+
+        <ul class="summary-list" id="summaryList"></ul>
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" id="backToVoteBtn">
+            <span class="btn-text">← Go Back</span>
+          </button>
+          <button class="btn btn-primary" id="submitAllBtn">
+            <span class="spinner"></span>
+            <span class="btn-text">✓ Submit All Votes</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Final Confirmation -->
+    <section class="section" id="confirmSection">
+      <div class="card">
+        <div class="confirmation">
+          <div class="confirmation__icon">✓</div>
+          <h2 class="confirmation__title">All Votes Recorded!</h2>
+          <p class="confirmation__text">
+            Your votes have been successfully submitted. Thank you for participating in the DL4ALL JALINGO CDS Election.
+          </p>
+          <p class="confirmation__text" style="margin-top: 16px;">
+            <a href="/" style="color: var(--accent-light);">Return to Home</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>DL4ALL JALINGO Election Portal &copy; 2026 &middot; <a href="/">Home</a></p>
+    </footer>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

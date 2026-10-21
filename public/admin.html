@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DL4ALL CDS Election Admin Panel">
+  <title>DL4ALL — Admin Panel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+</head>
+<body>
+  <!-- Admin Auth -->
+  <div id="adminAuth" class="admin-auth">
+    <div class="card">
+      <h2 class="section-title">Admin Access</h2>
+      <p class="section-desc">Enter your admin key to continue</p>
+      <div id="authAlert" class="alert alert-error">
+        <span>⚠️</span>
+        <span id="authAlertText"></span>
+      </div>
+      <form id="authForm">
+        <div class="form-group">
+          <label class="form-label" for="adminKeyInput">Admin Key</label>
+          <input type="password" id="adminKeyInput" class="form-input" placeholder="Enter admin key" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="authBtn">
+          <span class="btn-text">Access Dashboard</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="adminDashboard" class="admin-container" style="display: none;">
+    <div class="admin-header">
+      <div class="admin-header__left">
+        <div>
+          <h1 class="header__title" style="font-size: 1.3rem;">📊 Election Dashboard</h1>
+        </div>
+        <span class="admin-badge">Admin</span>
+      </div>
+      <a href="/" style="color: var(--accent-light); text-decoration: none; font-size: 0.85rem;">← Back Home</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="statVoters">0</div>
+        <div class="stat-label">Unique Voters</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statRegistered">0</div>
+        <div class="stat-label">Registered</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statTurnout">0%</div>
+        <div class="stat-label">Turnout</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statPositions">0</div>
+        <div class="stat-label">Positions</div>
+      </div>
+    </div>
+
+    <!-- Results by Position -->
+    <h2 style="font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--accent-light);">Results by Position</h2>
+    <div class="admin-results-grid" id="resultsContainer">
+      <p style="color: var(--text-muted); font-size: 0.85rem;">Loading results...</p>
+    </div>
+
+    <button class="btn btn-primary btn-sm" id="refreshBtn" style="margin: 16px 0 24px;">
+      <span class="btn-text">🔄 Refresh Results</span>
+    </button>
+
+    <!-- Settings Section -->
+    <div class="card" style="margin-bottom: 24px;">
+      <h2 class="section-title">Election Settings</h2>
+      <p class="section-desc">Control public visibility of election features</p>
+      
+      <div id="settingsAlert" class="alert alert-success" style="display: none;">
+        <span>✅</span>
+        <span id="settingsAlertText">Settings updated</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md);">
+          <div>
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Voting Enabled</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Show the "Start Voting" button on the homepage</div>
+          </div>
+          <input type="checkbox" id="toggleVoting" style="width: 20px; height: 20px; accent-color: var(--accent);">
+        </label>
+        
+        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md);">
+          <div>
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Results Visible</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Show the "View Live Results" button on the homepage</div>
+          </div>
+          <input type="checkbox" id="toggleResults" style="width: 20px; height: 20px; accent-color: var(--accent);">
+        </label>
+        
+        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md);">
+          <div>
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Candidates Page Voting</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Show the "Start Voting" button on the Candidates page</div>
+          </div>
+          <input type="checkbox" id="toggleCandidatesVoting" style="width: 20px; height: 20px; accent-color: var(--accent);">
+        </label>
+      </div>
+    </div>
+
+    <!-- Voter Register Section -->
+    <section class="card register-card" id="voterRegister" style="margin-bottom: 24px;">
+      <div class="register-head">
+        <div>
+          <h2 class="section-title">Voter Register</h2>
+          <p class="section-desc">Upload a CSV to update who can vote. You'll preview changes before anything is saved.</p>
+        </div>
+        <div class="register-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="downloadTemplateBtn">⬇ Template</button>
+          <button type="button" class="btn btn-outline btn-sm" id="exportRegisterBtn">⬇ Export Register</button>
+        </div>
+      </div>
+
+      <div class="register-meta">
+        <div class="register-chip"><strong id="regTotal">—</strong><span>registered voters</span></div>
+        <div class="register-chip"><strong id="regVoted">—</strong><span>have voted</span></div>
+        <div class="register-chip register-chip--wide"><span id="regLastUpload">No uploads yet</span></div>
+      </div>
+
+      <div id="registerAlert" class="alert alert-success">
+        <span>✅</span>
+        <span id="registerAlertText"></span>
+      </div>
+
+      <label class="dropzone" id="registerDropzone" for="registerFile">
+        <input type="file" id="registerFile" accept=".csv,text/csv" hidden>
+        <div class="dropzone__icon">📄</div>
+        <div class="dropzone__title" id="dropzoneTitle">Drop a CSV file here or <u>browse</u></div>
+        <div class="dropzone__hint">Columns: <code>Surname</code>, <code>State Code</code> (e.g. TR/25A/0406) · max 5 MB</div>
+      </label>
+
+      <fieldset class="mode-toggle" id="registerMode">
+        <legend class="form-label">Import mode</legend>
+        <label class="mode-option">
+          <input type="radio" name="registerMode" value="merge" checked>
+          <span class="mode-option__body">
+            <span class="mode-option__title">Merge</span>
+            <span class="mode-option__desc">Add new voters and update surnames. Nobody is removed.</span>
+          </span>
+        </label>
+        <label class="mode-option">
+          <input type="radio" name="registerMode" value="replace">
+          <span class="mode-option__body">
+            <span class="mode-option__title">Replace</span>
+            <span class="mode-option__desc">Register becomes exactly this file. Voters who already voted are always kept.</span>
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="register-preview" id="registerPreview" hidden>
+        <div class="register-preview__title">Preview of changes <span id="previewFile"></span></div>
+        <div class="preview-grid" id="previewGrid"></div>
+        <div class="preview-issues" id="previewIssues"></div>
+        <div class="register-preview__footer">
+          <button type="button" class="btn btn-outline btn-sm" id="cancelImportBtn">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="applyImportBtn">
+            <span class="btn-text">Apply Import</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Manage Section -->
+    <div class="admin-grid">
+      <div class="card">
+        <h2 class="section-title">Add Candidate</h2>
+        <p class="section-desc">Register a new candidate</p>
+        <div id="addAlert" class="alert alert-success">
+          <span>✅</span>
+          <span id="addAlertText"></span>
+        </div>
+        <form id="addCandidateForm" class="admin-form">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="candName">Full Name</label>
+            <input type="text" id="candName" class="form-input" placeholder="e.g. John Doe" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="candPosition">Position</label>
+            <input type="text" id="candPosition" class="form-input" placeholder="Select or type position" list="positionsDatalist" required>
+            <datalist id="positionsDatalist">
+              <option value="President"></option>
+              <option value="Vice President"></option>
+              <option value="General Secretary"></option>
+              <option value="Treasurer"></option>
+              <option value="Financial Secretary"></option>
+              <option value="Welfare Secretary"></option>
+              <option value="Project Manager"></option>
+              <option value="Provost"></option>
+            </datalist>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="candManifesto">Manifesto (optional)</label>
+            <textarea id="candManifesto" class="form-input" placeholder="Candidate's vision or manifesto..." rows="3" style="resize:vertical;"></textarea>
+          </div>
+
+          <!-- Candidate Photo: Link or Device Upload -->
+          <div class="cand-image-section">
+            <label class="form-label" style="display: block; margin-bottom: 6px;">Candidate Photo (optional)</label>
+            
+            <div class="cand-image-toggle">
+              <button type="button" class="cand-toggle-btn active" id="toggleImageLinkBtn" data-mode="link">
+                <span>🔗 Image Link</span>
+              </button>
+              <button type="button" class="cand-toggle-btn" id="toggleImageUploadBtn" data-mode="upload">
+                <span>📁 Upload from Device</span>
+              </button>
+            </div>
+
+            <!-- Mode 1: URL input -->
+            <div id="candImageUrlWrapper" class="cand-image-input-wrap">
+              <input type="text" id="candImage" class="form-input" placeholder="https://example.com/photo.jpg or /images/..." autocomplete="off">
+            </div>
+
+            <!-- Mode 2: Device upload dropzone -->
+            <div id="candImageUploadWrapper" class="cand-image-input-wrap" style="display: none;">
+              <input type="file" id="candImageFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+              <div class="cand-image-dropzone" id="candImageDropzone">
+                <div class="cand-image-dropzone__icon">📷</div>
+                <div class="cand-image-dropzone__title">Click or drop candidate photo</div>
+                <div class="cand-image-dropzone__hint">JPG, PNG, WebP up to 5 MB</div>
+              </div>
+            </div>
+
+            <!-- Photo Preview -->
+            <div id="candImagePreviewCard" class="cand-photo-preview" style="display: none;">
+              <img id="candImagePreviewThumb" src="" alt="Photo preview" class="cand-photo-preview__thumb">
+              <div class="cand-photo-preview__details">
+                <div id="candImagePreviewTitle" class="cand-photo-preview__name">photo.jpg</div>
+                <div id="candImagePreviewMeta" class="cand-photo-preview__meta">From device</div>
+              </div>
+              <button type="button" id="candImageRemoveBtn" class="cand-photo-preview__remove" title="Remove photo">✕</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-sm" id="addCandBtn">
+            <span class="btn-text">+ Add Candidate</span>
+            <span class="spinner"></span>
+          </button>
+        </form>
+      </div>
+      <div class="card">
+        <h2 class="section-title">Candidates</h2>
+        <p class="section-desc">Manage registered candidates</p>
+        <ul class="manage-list" id="manageList">
+          <li style="color: var(--text-muted); font-size: 0.85rem; padding: 10px;">Loading...</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>DL4ALL JALINGO Election Portal &copy; 2026</p>
+    </footer>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
